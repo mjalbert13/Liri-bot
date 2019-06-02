@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/mjalbert13/Liri-bot/issues"
   },
-  "homepage": "https://github.com/mjalbert13/Liri-bot#readme"
+  "homepage": "https://github.com/mjalbert13/Liri-bot#readme",
+  "dependencies": {
+    "inquirer": "^6.3.1"
+  }
 }
