@@ -12,6 +12,7 @@ var doInput = process.argv[2];
 var whatInput =process.argv[3];
 
 var queryUrl = "http://www.omdbapi.com/?t=" + whatInput + "&y=&plot=short&apikey=trilogy";
+var bandURL ="https://rest.bandsintown.com/artists/" + whatInput+ "/events?app_id=codingbootcamp"
 //functions
 var spotifyThat = function(whatInput){
     if(whatInput=== undefined){
@@ -37,37 +38,61 @@ var spotifyThat = function(whatInput){
 }
 var getMovie = function(){
     axios.get(queryUrl).then(function(response){
+        var title = response.data.title;
         var year = response.data.Year;
-        console.log(whatInput+" was released in "+year);
+        var rated = response.data.Rated;
+        var plot = response.data.Plot;
+        console.log("============"+"\nTitle: "+title+"\nYear: "+year+"\nRated: "+rated+"\nPlot: "+plot+"\n=========");
     })
 }
 
+var concertThis = function(){
+    axios.get(bandURL).then(function(event){
+        var concerts = event.data;
+        //console.log(concerts);
+        for(var i = 0; i < concerts.length; i++){
+            var venues = concerts[i].venue.name;
+            var location = concerts[i].venue.city;
+            var date = concerts[i].datetime;
+            var lineUp = concerts[i].lineup;
+            console.log("=========="+"\nVenue: "+venues+"\nCity: "+location+"\nDate: "+date+"\nLineup: "+lineUp+"\n==========");
+        }
+        
+    
+    })
+}
 console.log(doInput, whatInput);
 if(doInput === "spotify"){
     
     spotifyThat(whatInput);
 }
-
 if(doInput === "omdb"){
     getMovie(whatInput);
 }
-// nquirer.prompt([
+
+if(doInput ==="concert"){
+    concertThis(whatInput);
+}
+
+if(doInput === ""){
+    console.log("Look what I can do....!")
+}
+// inquirer.prompt([
 //     {
-//         name: "what",
+//         name: "something",
 //         type:"input",
 //         message:"what do you want to do?",
         
 //     },
 //     {
-//         name:"song-movie",
+//         name:"what",
 //         type: "input",
 //         message: "What should I look up?"
 //     }
 
 // ]).then(function(answer){
 //     var doInput = answer.name;
-//     if(doInput ==="spotify"){
-//         spotifyThat();
-
+//     if(doInput ==="omdb"){
+//         getMovie(answer.something);
 //     }
 // })
