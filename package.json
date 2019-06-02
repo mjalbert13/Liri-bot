@@ -19,6 +19,7 @@
   "homepage": "https://github.com/mjalbert13/Liri-bot#readme",
   "dependencies": {
     "dotenv": "^8.0.0",
-    "inquirer": "^6.3.1"
+    "inquirer": "^6.3.1",
+    "spotify-web-api-js": "^1.2.0"
   }
 }
