@@ -2,7 +2,7 @@
 require("dotenv").config();
 var fs = require("fs");
 var keys = require("./keys");
-var Spotify = require("spotify-web-api-js");
+var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
 var axios = require("axios");
 var inquirer = require("inquirer");
@@ -11,46 +11,48 @@ var inquirer = require("inquirer");
 var doInput = process.argv[2];
 var whatInput =process.argv[3];
 
+//API urls
 var queryUrl = "http://www.omdbapi.com/?t=" + whatInput + "&y=&plot=short&apikey=trilogy";
 var bandURL ="https://rest.bandsintown.com/artists/" + whatInput+ "/events?app_id=codingbootcamp"
-//functions
+
+//Functions
+//Spotify api function
 var spotifyThat = function(whatInput){
-    if(whatInput=== undefined){
-        whatInput = "Hey I don't know";
-    }
-    spotify.search(
-        {
-            type:"track",
-            query: whatInput
-        },
-        function(err, data){
-            if(err){
-                console.log("Error: "+err);
-                return;
-            }
-            var info = data.tracks.items;
-            for(var i =0; i < info.length; i++){
-                console.log(i);
-                console.log("Song name: "+info[i].name);
-            }
+    spotify.search({
+        type:'track',
+        query: whatInput
+    },
+    function(error, data){
+        if(error){
+            console.log(error);
+            return;
         }
+        var songInfo = data.tracks.items[0];
+        //console.log(songInfo);
+        var band = songInfo.album.artists[0].name;
+        var album = songInfo.album.name;
+        console.log("=========="+"Artist(s): "+band+"\nAlbum: "+album+"\n==========");
+    }
     )
 }
+    
+//OMDB api function
 var getMovie = function(){
     axios.get(queryUrl).then(function(response){
-        var title = response.data.title;
+        var title = response.data.Title;
         var year = response.data.Year;
         var rated = response.data.Rated;
         var plot = response.data.Plot;
-        console.log("============"+"\nTitle: "+title+"\nYear: "+year+"\nRated: "+rated+"\nPlot: "+plot+"\n=========");
+        console.log("=========="+"\nTitle: "+title+"\nYear: "+year+"\nRated: "+rated+"\nPlot: "+plot+"\n==========");
     })
 }
 
+//Bands in town api function
 var concertThis = function(){
     axios.get(bandURL).then(function(event){
         var concerts = event.data;
         //console.log(concerts);
-        for(var i = 0; i < concerts.length; i++){
+        for(var i = 0; i < 10; i++){
             var venues = concerts[i].venue.name;
             var location = concerts[i].venue.city;
             var date = concerts[i].datetime;
