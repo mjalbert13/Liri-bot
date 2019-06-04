@@ -11,17 +11,16 @@ var inquirer = require("inquirer");
 var doInput = process.argv[2];
 var whatInput= process.argv[3];
 
-
-
 //Functions
 //Spotify api function
-var spotifyThat = function(whatInput){
-    if(whatInput === undefined){
-        whatInput = "hey-i-dont-know"
+var spotifyThat = function(song){
+    
+    if(song === undefined){
+        song = "hey-i-dont-know"
     }
     spotify.search({
         type:'track',
-        query: whatInput
+        query: song
     },
     function(error, data){
         if(error){
@@ -43,9 +42,9 @@ var spotifyThat = function(whatInput){
 var getMovie = function(movie){
 
     var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
-    // if(whatInput === undefined){
-    //     whatInput="mr-nobody"
-    // }
+    if(movie === undefined){
+        movie="mr-nobody"
+    }
     axios.get(queryUrl).then(function(response){
         //console.log(response);
         var title = response.data.Title;
@@ -62,17 +61,18 @@ var getMovie = function(movie){
 
 //Bands in town api function
 var concertThis = function(show){
-    if(whatInput===undefined){
-        whatInput = "blink-182"
+    if(show===undefined){
+        show = "blink-182"
     }
     console.log(show)
-    var bandURL ="https://rest.bandsintown.com/artists/" +show+ "/events?app_id=codingbootcamp"
+    var bandURL ="https://rest.bandsintown.com/artists/" + show + "/events?app_id=codingbootcamp";
 
     axios.get(bandURL).then(function(error,event){
         // if(error){
         //     console.log("Sorry could not find any concerts");
         //     return;
         // }
+        console.log(event);
         var concerts = event.data;
         //console.log(concerts);
         for(var i = 0; i < 10; i++){
@@ -82,62 +82,68 @@ var concertThis = function(show){
             var lineUp = concerts[i].lineup;
             console.log("\n=========="+"\nVenue: "+venues+"\nCity: "+location+"\nDate: "+date+"\nLineup: "+lineUp+"\n==========");
         }
-        
-    
     })
 }
+
+//do-what-it-says function that reads the txt file and runs corisponding function
 var doSomething = function(){
     fs.readFile("random.txt", "utf8",function(err,data){
         var text = data.split(",");
         spotifyThat(text[1])
     })
 }
+
+//checks if any arguments are passed and then runs corisponding functions
 console.log(doInput, whatInput);
-if(doInput === "spotify"){
-    
+if(doInput === "spotify-this"){
     spotifyThat(whatInput);
-}
-if(doInput === "omdb"){
+
+}else if(doInput === "movie-this"){
     getMovie(whatInput);
-}
 
-if(doInput ==="concert"){
+}else if(doInput ==="concert-this"){
     concertThis(whatInput);
+
+}else if(doInput === "do-what-it-says"){
+    doSomething(whatInput);
+
+}else{
+    doInput =undefined;
 }
 
+//if no argument is passed or is not a valid key word app will use inquirer 
 if(doInput === undefined){
-    console.log("Look what I can do....!")
+    console.log("Sorry I didn't catch that.")
 
+    inquirer.prompt([
+        {
+            name: "something",
+            type:"list",
+            choices:["Spotify-this","Concert-this","Movie-this","Do-what-it-says"],
+            message:"What do you want to do?"
+            
+        },
+        {
+            name:"what",
+            type: "input",
+            message: "What should I look up?"
+        }
 
-inquirer.prompt([
-    {
-        name: "something",
-        type:"list",
-        choices:["Spotify-this","Concert-this","Movie-this","Do-what-it-says"],
-        message:"what do you want to do?"
-        
-    },
-    {
-        name:"what",
-        type: "input",
-        message: "What should I look up?"
-    }
-
-]).then(function(answer){
-    var doInput = answer.something;
-    var search = answer.what;
-    console.log(search)
-    if(doInput ==="Movie-this"){
-        getMovie(search);
-    }
-    if(doInput ==="Spotify-this" ){
-        spotifyThat(search);
-    }
-    if(doInput === "Concert-this"){
-        concertThis(search);
-    }
-    if(doInput==="Do-what-it-says"){
-        doSomething(search);
-    }
-})
+    ]).then(function(answer){
+        var choice = answer.something;
+        var search = answer.what;
+        //console.log(search)
+        if(choice ==="Movie-this"){
+            getMovie(search);
+        }
+        if(choice ==="Spotify-this" ){
+            spotifyThat(search);
+        }
+        if(choice === "Concert-this"){
+            concertThis(search);
+        }
+        if(choice==="Do-what-it-says"){
+            doSomething(search);
+        }
+    })
 }
