@@ -1,4 +1,4 @@
-//setting up environment
+//Setting up environment
 require("dotenv").config();
 var fs = require("fs");
 var keys = require("./keys");
@@ -7,7 +7,7 @@ var spotify = new Spotify(keys.spotify);
 var axios = require("axios");
 var inquirer = require("inquirer");
 
-//variables
+//Variables
 var doInput = process.argv[2];
 var whatInput= process.argv[3];
 
@@ -43,7 +43,7 @@ var getMovie = function(movie){
 
     var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
     if(movie === undefined){
-        movie="mr-nobody"
+        movie="dodgeball"
     }
     axios.get(queryUrl).then(function(response){
         //console.log(response);
@@ -60,19 +60,15 @@ var getMovie = function(movie){
 }
 
 //Bands in town api function
-var concertThis = function(show){
-    if(show===undefined){
-        show = "blink-182"
+var concertThis = function(artist){
+    if(artist===undefined){
+        artist= "blink-182"
     }
-    console.log(show)
-    var bandURL ="https://rest.bandsintown.com/artists/" + show + "/events?app_id=codingbootcamp";
+  
+    var bandURL ="https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
 
-    axios.get(bandURL).then(function(error,event){
-        // if(error){
-        //     console.log("Sorry could not find any concerts");
-        //     return;
-        // }
-        console.log(event);
+    axios.get(bandURL).then(function(event){
+        
         var concerts = event.data;
         //console.log(concerts);
         for(var i = 0; i < 10; i++){
@@ -87,13 +83,13 @@ var concertThis = function(show){
 
 //do-what-it-says function that reads the txt file and runs corisponding function
 var doSomething = function(){
-    fs.readFile("random.txt", "utf8",function(err,data){
+    fs.readFile("random.txt", "utf8",function(data){
         var text = data.split(",");
         spotifyThat(text[1])
     })
 }
 
-//checks if any arguments are passed and then runs corisponding functions
+//Checks if any arguments are passed and then runs corisponding functions
 console.log(doInput, whatInput);
 if(doInput === "spotify-this"){
     spotifyThat(whatInput);
@@ -111,7 +107,7 @@ if(doInput === "spotify-this"){
     doInput =undefined;
 }
 
-//if no argument is passed or is not a valid key word app will use inquirer 
+//If no argument is passed or is not a valid key word app will use inquirer 
 if(doInput === undefined){
     console.log("Sorry I didn't catch that.")
 
