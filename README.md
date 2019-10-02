@@ -3,6 +3,9 @@ Node js app that lets users search for songs, movies and concert info using the 
 
 ## Installation
 - Clone to Download
+```bash
+git clone https://github.com/mjalbert13/Liri-bot.git
+```
 - npm install
 
 ## Usage
