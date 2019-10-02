@@ -1,7 +1,11 @@
 # Liri-bot
 Node js app that lets users search for songs, movies and concert info using the command line.
 
+## Installation
+- Clone to Download
+- npm install
 
+## Usage
 This app has four basic commands:
     Spotify-this  -  uses node spotify api to get information based on the song the user inputs 
     Concert-this  -  uses bands in town api to get concert information such as dates and venues 
@@ -22,6 +26,11 @@ to use spaces when inputting whaen inquirer runs.
                           Do-what-it-says
                          what should i look up? (input) 
                          
-                          
+  ## Technologies Used:
+  - Node
+  - JavaScript
+  - Spotify API
+  - OMDB API
+  - Bands in town API
     
     
